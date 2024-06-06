@@ -7,9 +7,10 @@
   */
  async function app(fastify, options) {
     fastify.register(require('@fastify/cors'));
-
+      // register services
+      fastify.register(require('./services/servicePlugin'))
     // register test router
-    fastify.register(require('./routes/testRoutes'), {prefix: '/test'})
+    fastify.register(require('./routes/api/apiRouter'), {prefix: '/api'})
  }
 
  module.exports = fastifyPlugin(app);
