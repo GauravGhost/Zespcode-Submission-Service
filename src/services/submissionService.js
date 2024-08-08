@@ -1,7 +1,8 @@
 const SubmissionProducer = require('../producers/submissionQueueProducer')
 
 class SubmissionService {
-    constructor() {
+    constructor(submissionRepository) {
+        this.submissionRepository = submissionRepository;
     }
 
     async pingCheck() {
@@ -9,7 +10,13 @@ class SubmissionService {
     }
 
     async addSubmission(submission){
-        const response = await SubmissionProducer(submission);
+        const response = this.submissionRepository.createSubmission(submission);
+        if(!submission){
+            // TODO: Add error handling
+            throw {message: "Not able to create submission"}
+        }
+        const queueResponse = await SubmissionProducer(submission);
+        return {queueResponse, response: submission};
     }
 }
 
