@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
+    "predev": "npx kill-port 3000",
     "dev": "npx nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,7 +14,11 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^9.0.1",
+    "bullmq": "^5.12.1",
+    "dotenv": "^16.4.5",
     "fastify": "^4.27.0",
-    "fastify-plugin": "^4.5.1"
+    "fastify-plugin": "^4.5.1",
+    "ioredis": "^5.4.1",
+    "mongoose": "^8.5.2"
   }
 }

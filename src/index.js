@@ -1,9 +1,8 @@
 const app = require('./app');
-
+const serverConfig = require('./config/serverConfig');
 const fastify = require('fastify')({logger: true})
 
-const PORT = 3000;
-
+const PORT = serverConfig.PORT
 fastify.register(app);
 
 fastify.listen({port: PORT}, (err)=> {
