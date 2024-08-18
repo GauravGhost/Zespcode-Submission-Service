@@ -20,12 +20,20 @@ class SubmissionService {
         const languageCodeStub = problemAdminApiResponse.data.codeStubs.find(codeStub => codeStub.language.toLowerCase() === submission.language.toLowerCase());
         submission.code = codeCreator(languageCodeStub.startSnippet, submission.code, languageCodeStub.endSnippet);
 
-        const response = this.submissionRepository.createSubmission(submission);
+        const response = await this.submissionRepository.createSubmission(submission);
         if (!response) {
             // TODO: Add error handling
             throw {message: "Not able to create submission"}
         }
-        const queueResponse = await SubmissionProducer(submission);
+        console.log(response);
+        const queueResponse = await SubmissionProducer({
+            [response._id]: {
+                code: submission.code,
+                language: submission.language,
+                inputCase: problemAdminApiResponse.data.testCases[0].input,
+                outputCase: problemAdminApiResponse.data.testCases[0].output,
+            }
+        });
         return {queueResponse, response: response};
     }
 }

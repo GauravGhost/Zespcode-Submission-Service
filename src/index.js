@@ -3,8 +3,6 @@ const serverConfig = require('./config/serverConfig');
 const fastify = require('fastify')({logger: true});
 const {connectToDB} = require('./config/dbConfig')
 
-const {fetchProblemDetails} = require("./apis/problemAdminApi");
-
 
 const PORT = serverConfig.PORT
 fastify.register(app);
