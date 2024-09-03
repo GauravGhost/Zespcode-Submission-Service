@@ -13,6 +13,7 @@ class SubmissionService {
 
     async addSubmission(submission) {
         const problemId = submission.problemId;
+        const userId = submission.userId;
         const problemAdminApiResponse = await fetchProblemDetails(problemId);
         if (!problemAdminApiResponse) {
             throw new Error("Failed to fetch the problem details");
@@ -32,8 +33,12 @@ class SubmissionService {
                 language: submission.language,
                 inputCase: problemAdminApiResponse.data.testCases[0].input,
                 outputCase: problemAdminApiResponse.data.testCases[0].output,
+                userId: userId,
+                submissionId: response._id,
             }
         });
+
+        // TODO: Add Handling for all the testcases.
         return {queueResponse, response: response};
     }
 }
