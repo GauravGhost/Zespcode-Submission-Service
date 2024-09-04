@@ -41,6 +41,19 @@ class SubmissionService {
         // TODO: Add Handling for all the testcases.
         return {queueResponse, response: response};
     }
+
+    async updateSubmission(id, submissionPayload){
+        try {
+            if(!id || !submissionPayload){
+                throw new Error("Invalid submission id or submission payload")
+            }
+            const response = await this.submissionRepository.updateSubmission(id, submissionPayload);
+            return response;
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }
 
 module.exports = SubmissionService
