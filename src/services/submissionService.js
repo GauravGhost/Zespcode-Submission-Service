@@ -1,5 +1,5 @@
 const SubmissionProducer = require('../producers/submissionQueueProducer')
-const {fetchProblemDetails} = require("../apis/problemAdminApi");
+const { fetchProblemDetails } = require("../apis/problemAdminApi");
 const codeCreator = require('../utils/codeCreator')
 
 class SubmissionService {
@@ -18,38 +18,36 @@ class SubmissionService {
         if (!problemAdminApiResponse) {
             throw new Error("Failed to fetch the problem details");
         }
-        const languageCodeStub = problemAdminApiResponse.data.codeStubs.find(codeStub => codeStub.language.toLowerCase() === submission.language.toLowerCase());
+        const languageCodeStub = problemAdminApiResponse.data.codeStubs.find(codeStub => codeStub.languageSlug.toLowerCase() === submission.language.toLowerCase());
         submission.code = codeCreator(languageCodeStub.startSnippet, submission.code, languageCodeStub.endSnippet);
-
         const response = await this.submissionRepository.createSubmission(submission);
         if (!response) {
             // TODO: Add error handling
-            throw {message: "Not able to create submission"}
+            throw { message: "Not able to create submission" }
         }
         console.log(response);
         const queueResponse = await SubmissionProducer({
             [response._id]: {
                 code: submission.code,
                 language: submission.language,
-                inputCase: problemAdminApiResponse.data.testCases[0].input,
-                outputCase: problemAdminApiResponse.data.testCases[0].output,
+                testCases: problemAdminApiResponse.data.testCases,
                 userId: userId,
                 submissionId: response._id,
             }
         });
 
         // TODO: Add Handling for all the testcases.
-        return {queueResponse, response: response};
+        return { queueResponse, response: response };
     }
 
-    async updateSubmission(id, submissionPayload){
+    async updateSubmission(id, submissionPayload) {
         try {
-            if(!id || !submissionPayload){
+            if (!id || !submissionPayload) {
                 throw new Error("Invalid submission id or submission payload")
             }
             const response = await this.submissionRepository.updateSubmission(id, submissionPayload);
             return response;
-            
+
         } catch (error) {
             console.log(error);
         }
